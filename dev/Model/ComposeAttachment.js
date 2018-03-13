@@ -1,6 +1,8 @@
 
 import ko from 'ko';
 import {isUnd, pInt, friendlySize, mimeContentType, getFileExtension} from 'Common/Utils';
+import {attachmentDownload} from 'Common/Links';
+import {getApp} from 'Helper/Apps/User';
 
 import {staticIconClass, staticFileType} from 'Model/Attachment';
 import {AbstractModel} from 'Knoin/AbstractModel';
@@ -30,6 +32,7 @@ class ComposeAttachmentModel extends AbstractModel
 		this.fileName = ko.observable(fileName);
 		this.size = ko.observable(size);
 		this.tempName = ko.observable('');
+		this.download = ko.observable('');
 
 		this.progress = ko.observable(0);
 		this.error = ko.observable('');
@@ -58,10 +61,16 @@ class ComposeAttachmentModel extends AbstractModel
 			return null === localSize ? '' : friendlySize(localSize);
 		});
 
+		this.downloadPreview = function() {
+			const download = this.download();
+			console.log('test');
+			return getApp().download(attachmentDownload(download));
+		};
+
 		this.mimeType = ko.computed(() => mimeContentType(this.fileName()));
 		this.fileExt = ko.computed(() => getFileExtension(this.fileName()));
 
-		this.regDisposables([this.progressText, this.progressStyle, this.title, this.friendlySize, this.mimeType, this.fileExt]);
+		this.regDisposables([this.progressText, this.progressStyle, this.title, this.friendlySize, this.downloadPreview, this.mimeType, this.fileExt]);
 	}
 
 	/**
@@ -76,6 +85,7 @@ class ComposeAttachmentModel extends AbstractModel
 			this.size(isUnd(json.Size) ? 0 : pInt(json.Size));
 			this.tempName(isUnd(json.TempName) ? '' : json.TempName);
 			this.isInline = false;
+			this.download(json.Download);
 
 			bResult = true;
 		}

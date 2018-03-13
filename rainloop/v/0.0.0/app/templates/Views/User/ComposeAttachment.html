@@ -7,7 +7,7 @@
 		<div class="iconProgress" data-bind="attr: { 'style': progressStyle }, visible: uploading"></div>
 		<div class="iconBG" data-bind="text: progressText, visible: uploading"></div>
 	</div>
-	<div class="attachmentNameParent">
+	<div class="attachmentNameParent" data-bind="click: downloadPreview">
 		<button type="button" class="close pull-right" style="margin-top:-4px;" data-bind="click: cancel">×</button>
 		<div style="white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">
 			<span class="attachmentName" data-bind="text: fileName"></span>&nbsp;
