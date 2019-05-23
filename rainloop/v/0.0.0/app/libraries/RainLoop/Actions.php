@@ -1317,7 +1317,7 @@ class Actions
 			)
 			{
 				$oAccount = $this->LoginProvide($aAccountHash[1], $aAccountHash[2], $aAccountHash[3],
-			empty($aAccountHash[5]) ? '' : $aAccountHash[5], empty($aAccountHash[11]) ? '' : $aAccountHash[11], $bThrowExceptionOnFalse);
+					empty($aAccountHash[5]) ? '' : $aAccountHash[5], empty($aAccountHash[11]) ? '' : $aAccountHash[11], $bThrowExceptionOnFalse);
 
 				if ($oAccount instanceof \RainLoop\Model\Account)
 				{
@@ -2248,7 +2248,6 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		$this->Plugins()->RunHook('event.login-pre-login-provide', array());
 
 		$oAccount = null;
-
 		$sClientCert = \trim($this->Config()->Get('ssl', 'client_cert', ''));
 		try
 		{
@@ -5217,7 +5216,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 				'Draft Mails' => \MailSo\Imap\Enumerations\FolderType::DRAFTS,
 				'Drafts Mail' => \MailSo\Imap\Enumerations\FolderType::DRAFTS,
 				'Drafts Mails' => \MailSo\Imap\Enumerations\FolderType::DRAFTS,
-
+				
 				'Junk E-mail' => \MailSo\Imap\Enumerations\FolderType::JUNK,
 
 				'Spam' => \MailSo\Imap\Enumerations\FolderType::JUNK,
@@ -5226,7 +5225,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 				'Junk' => \MailSo\Imap\Enumerations\FolderType::JUNK,
 				'Bulk Mail' => \MailSo\Imap\Enumerations\FolderType::JUNK,
 				'Bulk Mails' => \MailSo\Imap\Enumerations\FolderType::JUNK,
-
+				
 				'Deleted Items' => \MailSo\Imap\Enumerations\FolderType::TRASH,
 
 				'Trash' => \MailSo\Imap\Enumerations\FolderType::TRASH,
