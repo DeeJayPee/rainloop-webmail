@@ -10,7 +10,15 @@ const TIME_KEY = '__rlT';
  */
 export function isStorageSupported(storageName)
 {
-	if (storageName in window && window[storageName] && window[storageName].setItem)
+	let storageIsAvailable = false;
+	try
+	{
+		// at: window[storageName] firefox throws SecurityError: The operation is insecure. when in iframe
+		storageIsAvailable = storageName in window && window[storageName] && window[storageName].setItem;
+	}
+	catch (e) {} // eslint-disable-line no-empty
+
+	if (storageIsAvailable)
 	{
 		const
 			s = window[storageName],
