@@ -169,7 +169,6 @@ class Application extends \RainLoop\Config\AbstractConfig
 				'login_background'	=> array(''),
 				'login_desc'		=> array(''),
 				'login_css'			=> array(''),
-				'login_powered'		=> array(true),
 
 				'user_css'			=> array(''),
 				'user_logo'			=> array(''),
@@ -198,7 +197,8 @@ class Application extends \RainLoop\Config\AbstractConfig
 
 				'custom_server_signature'	=> array('RainLoop'),
 				'x_frame_options_header'	=> array(''),
-
+				'x_xss_protection_header'	=> array('1; mode=block'),
+				
 				'openpgp'					=> array(false),
 
 				'admin_login'				=> array('admin', 'Login and password for web admin panel'),
