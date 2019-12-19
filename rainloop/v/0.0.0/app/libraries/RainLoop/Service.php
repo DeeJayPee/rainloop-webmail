@@ -47,6 +47,12 @@ class Service
 			@\header('X-Frame-Options: '.$sXFrameOptionsHeader, true);
 		}
 
+		$sXssProtectionOptionsHeader = \trim($this->oActions->Config()->Get('security', 'x_xss_protection_header', ''));
+		if (0 < \strlen($sXssProtectionOptionsHeader))
+		{
+			@\header('X-XSS-Protection: '.$sXssProtectionOptionsHeader, true);
+		}
+
 		if ($this->oActions->Config()->Get('labs', 'force_https', false) && !$this->oHttp->IsSecure())
 		{
 			@\header('Location: https://'.$this->oHttp->GetHost(false, false).$this->oHttp->GetUrl(), true);
@@ -94,8 +100,6 @@ class Service
 		{
 			return $this;
 		}
-
-		$this->oActions->BootStart();
 
 		$sResult = '';
 		$bCached = false;
@@ -248,6 +252,10 @@ class Service
 
 			$sResult .= ']-->';
 		}
+		else
+		{
+			@\header('X-XSS-Protection: 1; mode=block');
+		}
 
 		// Output result
 		echo $sResult;
@@ -294,13 +302,14 @@ class Service
 
 		$aTemplateParameters = array(
 			'{{BaseAppHeadScriptLink}}' => $sSentryDsn ?
-				'<script type="text/javascript" data-cfasync="false" src="https://browser.sentry-cdn.com/5.0.8/bundle.min.js" crossorigin="anonymous"></script>' : '',
+				'<script type="text/javascript" data-cfasync="false" src="https://browser.sentry-cdn.com/5.4.3/bundle.min.js" crossorigin="anonymous"></script>' : '',
 			'{{BaseAppBodyScript}}' => $sSentryDsn ?
 				'<script type="text/javascript" data-cfasync="false">window && window.Sentry && window.Sentry.init({dsn:\''.$sSentryDsn.'\',ignoreErrors:[\'Document not active\']});</script>' : '',
 			'{{BaseAppFaviconPngLinkTag}}' => $sFaviconPngLink ? '<link type="image/png" rel="shortcut icon" href="'.$sFaviconPngLink.'" />' : '',
 			'{{BaseAppFaviconTouchLinkTag}}' => $sAppleTouchLink ? '<link type="image/png" rel="apple-touch-icon" href="'.$sAppleTouchLink.'" />' : '',
 			'{{BaseAppMainCssLink}}' => $this->staticPath('css/app'.($bAppCssDebug ? '' : '.min').'.css'),
 			'{{BaseAppThemeCssLink}}' => $this->oActions->ThemeLink($sTheme, $bAdmin),
+			'{{BaseAppPolyfillsScriptLink}}' => $this->staticPath('js/'.($bAppJsDebug ? '' : 'min/').'polyfills'.($bAppJsDebug ? '' : '.min').'.js'),
 			'{{BaseAppBootScriptLink}}' => $this->staticPath('js/'.($bAppJsDebug ? '' : 'min/').'boot'.($bAppJsDebug ? '' : '.min').'.js'),
 			'{{BaseViewport}}' => $bMobile ? 'width=device-width,initial-scale=1,user-scalable=no' : 'width=950,maximum-scale=2',
 			'{{BaseContentSecurityPolicy}}' => $sContentSecurityPolicy ?

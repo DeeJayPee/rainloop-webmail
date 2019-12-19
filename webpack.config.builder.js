@@ -1,35 +1,47 @@
+const path = require('path');
+const webpack = require('webpack');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
-const
-	path = require('path'),
-	webpack = require('webpack'),
-
-	CopyWebpackPlugin = require('copy-webpack-plugin'),
-	WebpackNotifierPlugin = require('webpack-notifier'),
-
-	devPath = path.resolve(__dirname, 'dev'),
-	devPathJoin = path.join(__dirname, 'dev'),
-	externalPathJoin = path.join(__dirname, 'dev', 'External'),
-	loose = true;
+const devPath = path.resolve(__dirname, 'dev');
+const devPathJoin = path.join(__dirname, 'dev');
+const externalPathJoin = path.join(__dirname, 'dev', 'External');
+const loose = true;
 
 const babelLoaderOptions = function() {
 	return {
+		ignore: [/\/core-js/],
 		cacheDirectory: true,
+		overrides: [
+			{
+				test: './node_modules/',
+				sourceType: 'unambiguous'
+			}
+		],
 		presets: [
-			['@babel/preset-env', {
-				loose: loose,
-				modules: false,
-				targets: {
-					browsers: ['last 3 versions', 'ie >= 9', 'firefox esr']
+			[
+				'@babel/preset-env',
+				{
+					useBuiltIns: 'usage',
+					corejs: { version: 3, proposals: true },
+					loose: loose,
+					modules: false
 				}
-			}]
+			]
 		],
 		plugins: [
-			['@babel/plugin-transform-runtime', {
-				corejs: 2
-			}],
-			['@babel/plugin-proposal-decorators', {
-				legacy: true
-			}],
+			[
+				'@babel/plugin-transform-runtime',
+				{
+					corejs: 3,
+					useESModules: true
+				}
+			],
+			[
+				'@babel/plugin-proposal-decorators',
+				{
+					legacy: true
+				}
+			],
 			'@babel/plugin-proposal-class-properties'
 		]
 	};
@@ -39,7 +51,9 @@ process.noDeprecation = true;
 module.exports = function(publicPath, pro, mode) {
 	return {
 		mode: mode || 'development',
+		devtool: 'inline-source-map',
 		entry: {
+			'js/polyfills': path.join(devPathJoin, 'polyfills.js'),
 			'js/boot': path.join(devPathJoin, 'boot.js'),
 			'js/app': path.join(devPathJoin, 'app.js'),
 			'js/admin': path.join(devPathJoin, 'admin.js')
@@ -60,14 +74,15 @@ module.exports = function(publicPath, pro, mode) {
 		plugins: [
 			new webpack.DefinePlugin({
 				'RL_COMMUNITY': !pro,
+				'process.env.NODE_ENV': JSON.stringify('production'),
 				'process.env': {
-					NODE_ENV: '"production"'
+					NODE_ENV: JSON.stringify('production')
 				}
 			}),
-			new WebpackNotifierPlugin(),
+			new webpack.DefinePlugin({}),
 			new CopyWebpackPlugin([
-				{from: 'node_modules/openpgp/dist/openpgp.min.js', to: 'js/min/openpgp.min.js'},
-				{from: 'node_modules/openpgp/dist/openpgp.worker.min.js', to: 'js/min/openpgp.worker.min.js'}
+				{ from: 'node_modules/openpgp/dist/openpgp.min.js', to: 'js/min/openpgp.min.js' },
+				{ from: 'node_modules/openpgp/dist/openpgp.worker.min.js', to: 'js/min/openpgp.worker.min.js' }
 			])
 		],
 		resolve: {

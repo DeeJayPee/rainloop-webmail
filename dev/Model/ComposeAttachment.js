@@ -1,14 +1,13 @@
-
 import ko from 'ko';
-import {isUnd, pInt, friendlySize, mimeContentType, getFileExtension} from 'Common/Utils';
-import {attachmentDownload} from 'Common/Links';
-import {getApp} from 'Helper/Apps/User';
 
-import {staticIconClass, staticFileType} from 'Model/Attachment';
-import {AbstractModel} from 'Knoin/AbstractModel';
+import { isUnd, pInt, friendlySize, mimeContentType, getFileExtension } from 'Common/Utils';
+import { attachmentDownload } from 'Common/Links';
+import { getApp } from 'Helper/Apps/User';
 
-class ComposeAttachmentModel extends AbstractModel
-{
+import { staticIconClass, staticFileType } from 'Model/Attachment';
+import { AbstractModel } from 'Knoin/AbstractModel';
+
+class ComposeAttachmentModel extends AbstractModel {
 	/**
 	 * @param {string} id
 	 * @param {string} fileName
@@ -18,8 +17,7 @@ class ComposeAttachmentModel extends AbstractModel
 	 * @param {string=} CID = ''
 	 * @param {string=} contentLocation = ''
 	 */
-	constructor(id, fileName, size = null, isInline = false, isLinked = false, CID = '', contentLocation = '')
-	{
+	constructor(id, fileName, size = null, isInline = false, isLinked = false, CID = '', contentLocation = '') {
 		super('ComposeAttachmentModel');
 
 		this.id = id;
@@ -63,14 +61,21 @@ class ComposeAttachmentModel extends AbstractModel
 
 		this.downloadPreview = function() {
 			const download = this.download();
-			console.log('test');
 			return getApp().download(attachmentDownload(download));
 		};
 
 		this.mimeType = ko.computed(() => mimeContentType(this.fileName()));
 		this.fileExt = ko.computed(() => getFileExtension(this.fileName()));
 
-		this.regDisposables([this.progressText, this.progressStyle, this.title, this.friendlySize, this.downloadPreview, this.mimeType, this.fileExt]);
+		this.regDisposables([
+			this.progressText,
+			this.progressStyle,
+			this.title,
+			this.friendlySize,
+			this.downloadPreview,
+			this.mimeType,
+			this.fileExt
+		]);
 	}
 
 	/**
@@ -79,8 +84,7 @@ class ComposeAttachmentModel extends AbstractModel
 	 */
 	initByUploadJson(json) {
 		let bResult = false;
-		if (json)
-		{
+		if (json) {
 			this.fileName(json.Name);
 			this.size(isUnd(json.Size) ? 0 : pInt(json.Size));
 			this.tempName(isUnd(json.TempName) ? '' : json.TempName);
@@ -108,4 +112,4 @@ class ComposeAttachmentModel extends AbstractModel
 	}
 }
 
-export {ComposeAttachmentModel, ComposeAttachmentModel as default};
+export { ComposeAttachmentModel, ComposeAttachmentModel as default };
